@@ -6,6 +6,8 @@ import app.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AuthorServiceImpl implements AuthorService{
 
@@ -35,5 +37,10 @@ public class AuthorServiceImpl implements AuthorService{
     @Override
     public Iterable<Author> findAuthors() {
         return authorRepository.findAll();
+    }
+
+    @Override
+    public List<Object[]> findAuthorBookStartingWith() {
+        return authorRepository.findAuthorBookStartingWith();
     }
 }

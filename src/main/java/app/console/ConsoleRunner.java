@@ -2,6 +2,7 @@ package app.console;
 
 import app.domain.Author;
 import app.domain.Book;
+import app.domain.Category;
 import app.domain.enums.AgeRestriction;
 import app.domain.enums.EditionType;
 import app.service.AuthorService;
@@ -11,14 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 @Component
@@ -35,13 +35,74 @@ public class ConsoleRunner implements CommandLineRunner{
 
     @Override
     public void run(String... strings) throws Exception {
-        insertBooksFromFile("books.txt");
-        insertAuthorsFromFile("authors.txt");
+        /*  insert data from files
+        //insertAuthorsFromFile("authors.txt");
+        //insertBooksFromFile("books.txt");
+
+        //addCategory("Fantasy");
+        //addCategory("Horror");
+        */
+
+        /*  query by age restriction
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        String input;
+        while (!(input = bufferedReader.readLine()).equals("Stop")) {
+            AgeRestriction ageRestriction = AgeRestriction.valueOf(input.toUpperCase());
+            List<Book> books = bookService.findByAgeRestriction(ageRestriction);
+            for (Book book : books) {
+                System.out.println(book.getTitle());
+            }
+        }
+        */
+
+        /* query using JPQL (edition type and number of copies)
+        List<Book> books = bookService.findByEditionAndCopies();
+        for (Book book : books) {
+            System.out.println(book.getTitle());
+        }
+        */
+
+        /* query using JPQL (price)
+        List<Book> books = bookService.findByPrice();
+        for (Book book : books) {
+            System.out.println(book.getTitle() + "- $" + book.getPrice());
+        }
+        */
+
+        /* a repository query
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD");
+        Date date = sdf.parse("2017-01-22");
+        List<Book> books = bookService.findByReleaseDateNot(date);
+        for (Book book : books) {
+            System.out.println(book.getTitle() + ", Release date: " + book.getReleaseDate());
+        }
+        */
+
+        /* a repository query: books released before a console given date
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = sdf.parse(br.readLine());
+        List<Book> books = this.bookService.findByReleaseDateBefore(date);
+        for (Book book : books) {
+            System.out.println(book.getTitle() + ", released: " + book.getReleaseDate());
+        }
+        */
+
+        /* JPQL authors query
+        List<Object[]> objects = this.authorService.findAuthorBookStartingWith();
+        for (Object[] object : objects) {
+            Author author = (Author) object[0];
+            long books = (long) object[1];
+            System.out.println(String.format("%s - %d", author.getFirstName(), books));
+        }
+        */
+
     }
 
     private void insertBooksFromFile(String filePath) throws IOException, ParseException {
             BufferedReader booksReader = new BufferedReader(new FileReader(filePath));
             String line = booksReader.readLine();
+
             while ((line = booksReader.readLine()) != null) {
                 String[] data = line.split("\\s+");
 
@@ -87,5 +148,11 @@ public class ConsoleRunner implements CommandLineRunner{
             authorService.save(author);
 
         }
+    }
+
+    private void addCategory(String name) {
+        Category category = new Category();
+        category.setName(name);
+        categoryService.save(category);
     }
 }

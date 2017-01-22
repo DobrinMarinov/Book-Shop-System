@@ -2,6 +2,8 @@ package app.service;
 
 import app.domain.Author;
 
+import java.util.List;
+
 public interface AuthorService {
 
     void save(Author author);
@@ -13,5 +15,7 @@ public interface AuthorService {
     Author findAuthor(Long id);
 
     Iterable<Author> findAuthors();
+
+    List<Object[]> findAuthorBookStartingWith();
 
 }
